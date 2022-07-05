@@ -9,7 +9,7 @@ public class ColorHierarchy : MonoBehaviour
     //얘는 하이라키 상에 있는 이 스크립트가 붙어있는 모든 오브젝트를 딕셔너리로 관리하는거
     private static Dictionary<Object, ColorHierarchy> coloredObjects = new Dictionary<Object, ColorHierarchy>();
 
-    static ColorHierarchy ()
+    static ColorHierarchy()
     {
         EditorApplication.hierarchyWindowItemOnGUI += HandleDraw;
     }
@@ -18,14 +18,15 @@ public class ColorHierarchy : MonoBehaviour
     {
         Object obj = EditorUtility.InstanceIDToObject(id); //고유 아이디를 가지고 해당 오브젝트를 불러오는 함수
 
-        if(obj != null && coloredObjects.ContainsKey(obj))
+        if (obj != null && coloredObjects.ContainsKey(obj))
         {
             GameObject gObj = obj as GameObject;
             ColorHierarchy ch = gObj.GetComponent<ColorHierarchy>();
-            if(ch != null)
+            if (ch != null)
             {
                 PaintObject(obj, selectionRect, ch);
-            }else
+            }
+            else
             {
                 coloredObjects.Remove(obj);
             }
@@ -36,7 +37,7 @@ public class ColorHierarchy : MonoBehaviour
     {
         Rect bgRect = new Rect(selectionRect.x, selectionRect.y, selectionRect.width + 50, selectionRect.height);
 
-        if(Selection.activeObject != obj)
+        if (Selection.activeObject != obj)
         {
             EditorGUI.DrawRect(bgRect, ch.backColor);
             string name = $"{obj.name}";
@@ -44,6 +45,8 @@ public class ColorHierarchy : MonoBehaviour
             EditorGUI.LabelField(bgRect, name, new GUIStyle()
             {
                 normal = new GUIStyleState() { textColor = ch.fontColor },
+                font = ch._nameFont,
+                alignment = ch._nameAlignment,
                 fontStyle = FontStyle.Bold
             });
         }
@@ -51,7 +54,12 @@ public class ColorHierarchy : MonoBehaviour
     }
 
     public Color backColor = Color.white;
+
     public Color fontColor = Color.black;
+
+    public Font _nameFont;
+
+    public TextAnchor _nameAlignment;
 
     private void Reset()
     {
@@ -60,7 +68,7 @@ public class ColorHierarchy : MonoBehaviour
 
     private void OnValidate()
     {
-        if(coloredObjects.ContainsKey(this.gameObject) == false)
+        if (coloredObjects.ContainsKey(this.gameObject) == false)
         {
             coloredObjects.Add(this.gameObject, this);
         }
