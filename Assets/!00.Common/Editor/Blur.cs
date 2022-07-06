@@ -11,8 +11,8 @@ public class Blur
 {
 
     Color tint = Color.black;
-    float tinting = 0.4f;
-    float blurSize = 4.0f;
+    float tinting = 0.1f;
+    float blurSize = 0.5f;
     int passes = 8;
 
     Material blurMaterial;
