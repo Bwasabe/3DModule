@@ -6,91 +6,116 @@ using UnityEngine;
 using UnityEditor;
 using static GrabScreenSwatch;
 
-public class ColorHierarchyWindow : EditorWindow, IWindowDrawable
+public class ColorHierarchyWindow : EditorWindow
 {
-    private float _fadeValue = 1f;
-
-    private int _count = 0;
-
     private static ColorHierarchyWindow _window;
 
-    private static Texture _backgroundTexture;
 
+    private static Texture _backgroundTexture;
     private static Blur _blur;
 
-    private static IWindowDrawable _this;
+    private Vector2 _scrollView = Vector2.up * 50;
 
-    private void Awake() {
-        //BlurWindow.RegisterWindow(this);
-        //BlurWindow.RegisterWindow(DrawWindow);
-    }
+    private Color _color = Color.white;
+
+    private int _selection = 0;
+
+    private string[] _texts = { "이히히", "우히히" };
+
 
 
     [MenuItem("GameObject/ColorHierarchyasdf %H")]
     private static void CreateColorHierarchy()
     {
+        Debug.Log("눌림");
         GameObject[] obj = Selection.gameObjects;
 
         _blur = new Blur(500, 300);
         _backgroundTexture = _blur.BlurTexture(GrabScreenSwatchTexture(MainCam.pixelRect));
 
 
-        _window = GetWindow<ColorHierarchyWindow>(false, "ColorHierarchy Setting", false);
+        _window = GetWindow<ColorHierarchyWindow>(false, "ColorHierarchy Setting", true);
         _window.Show();
 
-
-        _window.wantsMouseEnterLeaveWindow = true;
-        _window.wantsMouseMove = true;
-        for (int i = 0; i < obj.Length; i++)
-        {
-            Undo.AddComponent<ColorHierarchy>(obj[i]);
-        }
-    }
-
-    private void OnDisable() {
-        //BlurWindow.RemoveWindow(this);
-        //BlurWindow.RemoveWindow(DrawWindow);
+        // _window.wantsMouseEnterLeaveWindow = true;
+        // _window.wantsMouseMove = true;
+        // for (int i = 0; i < obj.Length; i++)
+        // {
+        //     Undo.AddComponent<ColorHierarchy>(obj[i]);
+        // }
     }
 
 
-    private static bool _isFocus = false;
-
-
-    private void OnLostFocus()
-    {
-        RestoreBlurBackground();
-        _isFocus = false;
-    }
-
-
-    private Vector2 _tempWindowPos;
     private void OnGUI()
     {
+        DrawWindow();
 
+
+
+        var verticalStyle = new GUIStyle();
+
+        verticalStyle.padding = new RectOffset(0, 0, 40, 0);
+        EditorGUILayout.BeginVertical(verticalStyle);
+        {
+
+            DrawRestoreLabel();
+            
+            EditorGUILayout.BeginHorizontal();
+            {
+                _scrollView = EditorGUILayout.BeginScrollView(_scrollView);
+                {
+                    _selection = GUILayout.SelectionGrid(_selection, _texts, 1);
+
+                    _color = EditorGUILayout.ColorField(_color);
+                }
+                EditorGUILayout.EndScrollView();
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+        EditorGUILayout.EndVertical();
+
+    }
+
+    private void DrawWindow()
+    {
         EditorGUI.BeginChangeCheck();
         {
-            DrawWindow();
+            GUI.DrawTexture(new Rect(-_window.position.position.x, -_window.position.position.y - 20, MainCam.pixelWidth, MainCam.pixelHeight), _backgroundTexture);
         }
         EditorGUI.EndChangeCheck();
+    }
 
-        var style = new GUIStyle();
-        style.fontSize = 50;
-        style.normal.textColor = Color.red;
-        GUILayout.Label($"{Event.current.type}", style);
+    private void DrawRestoreLabel()
+    {
+        var areaStyle = new GUIStyle("Box");
 
-
-        _fadeValue = EditorGUILayout.Slider(_fadeValue, 0f, 1f);
-        GUILayout.BeginArea(new Rect(50, 50, 500f, 500f), new GUIStyle("Box"));
+        areaStyle.normal.background = MakeTex(2, 2, new Color(0f, 0f, 0f, 0.5f));
+        GUILayout.BeginArea(new Rect(0, 0, _window.position.width, 30f), areaStyle);
         {
-            // EditorGUILayout.EnumPopup
+            var style = new GUIStyle();
+            style.alignment = TextAnchor.MiddleCenter;
+            style.fontSize = 15;
+            style.normal.textColor = Color.green;
+
+            GUILayout.Label($"만약 뒷배경이 안맞을경우 Ctrl + k를 눌러주세요!", style);
         }
         GUILayout.EndArea();
     }
 
-    public void DrawWindow()
+    private static Texture2D MakeTex(int width, int height, Color col)
     {
-        GUI.DrawTexture(new Rect(-_window.position.position.x, -_window.position.position.y -20, MainCam.pixelWidth, MainCam.pixelHeight), _backgroundTexture);
+        Color[] pix = new Color[width * height];
+        for (int i = 0; i < pix.Length; ++i)
+        {
+            pix[i] = col;
+        }
+        Texture2D result = new Texture2D(width, height);
+        result.SetPixels(pix);
+        result.Apply();
+        return result;
     }
+
+
 
     [MenuItem("GameObject/asfd %k")]
     private static void Tearfds()
@@ -100,14 +125,21 @@ public class ColorHierarchyWindow : EditorWindow, IWindowDrawable
 
     private static void RestoreBlurBackground()
     {
-        //if(_isFocus)return;
-        if (_window == null) return;
-
-        _window.Close();
-        _backgroundTexture = _blur.BlurTexture(GrabScreenSwatchTexture(MainCam.pixelRect));
-        _window = EditorWindow.GetWindow<ColorHierarchyWindow>(false, "ColorHierarchy Setting", false);
-
-        _isFocus = true;
+        bool isError = false;
+        try
+        {
+            _window.Close();
+        }
+        catch
+        {
+            isError = true;
+        }
+        if (!isError)
+        {
+            _backgroundTexture = _blur.BlurTexture(GrabScreenSwatchTexture(MainCam.pixelRect));
+            _window = EditorWindow.GetWindow<ColorHierarchyWindow>(false, "ColorHierarchy Setting", false);
+        }
     }
+
 
 }
