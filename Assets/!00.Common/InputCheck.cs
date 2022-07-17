@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class InputCheck : MonoBehaviour
 {
-
     private Event e;
 
     public KeyCode InputKeyCheck()
@@ -14,7 +13,7 @@ public class InputCheck : MonoBehaviour
         {
             e = Event.KeyboardEvent(Input.inputString[0].ToString());
         }
-        catch (System.Exception)
+        catch
         {
             foreach (KeyCode key in Enum.GetValues(typeof(KeyCode)))
             {
@@ -26,14 +25,14 @@ public class InputCheck : MonoBehaviour
         }
         return e.keyCode;
     }
-    private void Update()
-    {
-        if(Input.anyKeyDown){
-            Debug.Log(InputKeyCheck());
-        }
 
-    }
+    // Example
 
+    // private void Update()
+    // {
+    //     if(Input.anyKeyDown){
+    //         Debug.Log(InputKeyCheck());
+    //     }
 
-
+    // }
 }
