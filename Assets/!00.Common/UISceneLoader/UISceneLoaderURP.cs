@@ -11,17 +11,14 @@
 // {
 //     private static readonly string[] IGNORESCENES = {"UIScene", "StartScene"};
 //     private const string UISCENE = "UIScene";
-//     private const string CAMNAME = "UICam";
-//     private const string NEWGAMESCENE = "NewGameScene";
+//     private const string UICAM = "UICam";
 //     static AsyncOperation _async = new AsyncOperation();
-//     private static Camera _cam;
 
 
 //     [RuntimeInitializeOnLoadMethod]
 //     private static void LoadingUIScene()
 //     {
-//         _cam = GameObject.Find("UICam").GetComponent<Camera>();
-//         UICam = _cam;
+//         if(CheckIgnoreScene())return;
 //         StartAfterCor(Instance);
 //     }
 
@@ -41,12 +38,14 @@
 
 //     public static IEnumerator AfterLoadUIScene()
 //     {
-//         yield return WaitUntil(() => SceneManager.GetActiveScene().name.Equals(NEWGAMESCENE));
 //         _async = SceneManager.LoadSceneAsync(UISCENE, LoadSceneMode.Additive);
 //         yield return WaitUntil(() => _async.isDone);
 //         GameObject[] objs = SceneManager.GetSceneByName(UISCENE).GetRootGameObjects();
 //         for (int i = 0; i < objs.Length; i++)
 //         {
+//             if(objs[i].name.Equals(UICAM)){
+//                 UICam = objs[i].GetComponent<Camera>();
+//             }
 //             SceneManager.MoveGameObjectToScene(objs[i], SceneManager.GetActiveScene());
 //         }
 
