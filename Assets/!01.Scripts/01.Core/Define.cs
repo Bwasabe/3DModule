@@ -38,11 +38,27 @@ public static class Define
             {
                 _uiCam = value;
             }
-            else{
+            else
+            {
                 return;
             }
         }
     }
 
     private static Camera _uiCam;
+    
+
+    public static Transform FadeParent
+    {
+        get
+        {
+            if (_fadeParent == null)
+            {
+                _fadeParent = GameObject.Find("FadeParent").transform;
+            }
+            return _fadeParent;
+        }
+    }
+
+    private static Transform _fadeParent;
 }

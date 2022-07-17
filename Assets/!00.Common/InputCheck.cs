@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class InputCheck : MonoBehaviour
+public class InputCheck : MonoSingleton<InputCheck>
 {
     private Event e;
 
