@@ -61,4 +61,6 @@ public static class Define
     }
 
     private static Transform _fadeParent;
+
+    public static Vector2 MousePos => MainCam.ScreenToWorldPoint(Input.mousePosition);
 }
