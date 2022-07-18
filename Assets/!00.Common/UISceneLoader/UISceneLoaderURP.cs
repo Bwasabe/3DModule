@@ -50,7 +50,7 @@
 //         }
 
 //         var cameraData = MainCam.GetUniversalAdditionalCameraData();
-//         cameraData.cameraStack.Add(_cam);
+//         cameraData.cameraStack.Add(UICam);
 //         SceneManager.UnloadSceneAsync(UISCENE);
 //     }
 
