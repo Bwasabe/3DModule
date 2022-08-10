@@ -5,8 +5,8 @@ using UnityEditor;
 
 public class ColorHierarchyEditor
 {
+    [MenuItem("ColorHierarchy/AddColorHierarchy %H")]
     [MenuItem("GameObject/ColorHierarchy/AddColorHierarchy %H")]
-    [MenuItem("ColorHierarchy/AddColorHierarchy")]
     private static void CreateColorHierarchy()
     {
         GameObject[] obj = Selection.gameObjects;
@@ -18,8 +18,8 @@ public class ColorHierarchyEditor
         }
     }
 
+    [MenuItem("ColorHierarchy/RemoveColorHierarchy %#H")]
     [MenuItem("GameObject/ColorHierarchy/AddColorHierarchy %#H")]
-    [MenuItem("ColorHierarchy/RemoveColorHierarchy")]
     private static void RemoveColorHierarchy()
     {
         GameObject[] obj = Selection.gameObjects;
