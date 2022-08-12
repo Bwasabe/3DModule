@@ -1,5 +1,6 @@
+using System;
 using UnityEngine;
-
+using Random = UnityEngine.Random;
 
 public enum FADECHILDS
 {
@@ -10,6 +11,7 @@ public enum FADECHILDS
 
 public static class Define
 {
+
     public static Camera MainCam
     {
         get
@@ -24,7 +26,6 @@ public static class Define
     }
 
     private static Camera _mainCam;
-
 
     public static Camera UICam
     {
@@ -46,7 +47,6 @@ public static class Define
     }
 
     private static Camera _uiCam;
-    
 
     public static Transform FadeParent
     {
@@ -62,5 +62,13 @@ public static class Define
 
     private static Transform _fadeParent;
 
+
+
     public static Vector2 MousePos => MainCam.ScreenToWorldPoint(Input.mousePosition);
+
+    public static T GetRandomEnum<T>(bool isNone = false, bool isLength = false)
+    {
+        Array values = Enum.GetValues(typeof(T));
+        return (T)values.GetValue(Random.Range((isNone) ? 1 : 0, (isLength) ? values.Length - 1 : values.Length));
+    }
 }
