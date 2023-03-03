@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityToolbarExtender;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 [InitializeOnLoad]
 public class ToolbarScene
@@ -64,6 +65,8 @@ public class ToolbarScene
 
                     menu.AddItem(new GUIContent($"{addPath}{extension}"), false, () =>
                     {
+                        Scene currentScene = SceneManager.GetActiveScene();
+                        EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
                         EditorSceneManager.OpenScene(scene.Substring(assetsIndex));
                     });
                 }
@@ -80,6 +83,6 @@ public class ToolbarScene
                 }
             }
         }
-
     }
+
 }
