@@ -1,15 +1,14 @@
 using System;
 using UnityEngine;
 
-public class InputCheck : MonoSingleton<InputCheck>
+public static class InputCheck
 {
-    private Event e;
-
-    public KeyCode InputKeyCheck()
+    public static KeyCode GetInput()
     {
         try
         {
-            e = Event.KeyboardEvent(Input.inputString[0].ToString());
+            Event e = Event.KeyboardEvent(Input.inputString[0].ToString());
+            return e.keyCode;
         }
         catch
         {
@@ -17,20 +16,12 @@ public class InputCheck : MonoSingleton<InputCheck>
             {
                 if (Input.GetKeyDown(key))
                 {
-                    e = Event.KeyboardEvent(key.ToString());
+                    Event e = Event.KeyboardEvent(key.ToString());
+                    return e.keyCode;
                 }
             }
         }
-        return e.keyCode;
+        return KeyCode.None;
     }
 
-    // Example
-
-    // private void Update()
-    // {
-    //     if(Input.anyKeyDown){
-    //         Debug.Log(InputKeyCheck());
-    //     }
-
-    // }
 }

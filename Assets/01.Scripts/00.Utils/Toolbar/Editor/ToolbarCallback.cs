@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEditor;
 using System.Reflection;
+using Object = UnityEngine.Object;
 
 #if UNITY_2019_1_OR_NEWER
 using UnityEngine.UIElements;
@@ -50,22 +51,22 @@ namespace UnityToolbarExtender
 			if (m_currentToolbar == null)
 			{
 				// Find toolbar
-				var toolbars = Resources.FindObjectsOfTypeAll(m_toolbarType);
+				Object[] toolbars = Resources.FindObjectsOfTypeAll(m_toolbarType);
 				m_currentToolbar = toolbars.Length > 0 ? (ScriptableObject) toolbars[0] : null;
 				if (m_currentToolbar != null)
 				{
 #if UNITY_2021_1_OR_NEWER
-					var root = m_currentToolbar.GetType().GetField("m_Root", BindingFlags.NonPublic | BindingFlags.Instance);
-					var rawRoot = root.GetValue(m_currentToolbar);
-					var mRoot = rawRoot as VisualElement;
+					FieldInfo root = m_currentToolbar.GetType().GetField("m_Root", BindingFlags.NonPublic | BindingFlags.Instance);
+					object rawRoot = root.GetValue(m_currentToolbar);
+					VisualElement mRoot = rawRoot as VisualElement;
 					
 					RegisterCallback("ToolbarZoneLeftAlign", OnToolbarGUILeft);
 					RegisterCallback("ToolbarZoneRightAlign", OnToolbarGUIRight);
 
 					void RegisterCallback(string root, Action cb) {
-						var toolbarZone = mRoot.Q(root);
+						VisualElement toolbarZone = mRoot.Q(root);
 
-						var parent = new VisualElement()
+						VisualElement parent = new VisualElement()
 						{
 							style = {
 								flexGrow = 1,
@@ -73,7 +74,7 @@ namespace UnityToolbarExtender
 							}
 						};
 
-						var container = new IMGUIContainer();
+						IMGUIContainer container = new IMGUIContainer();
 						container.style.flexGrow = 1;
 						container.onGUIHandler += () => { 
 							cb?.Invoke();
@@ -112,7 +113,7 @@ namespace UnityToolbarExtender
 
         static void OnGUI()
 		{
-			var handler = OnToolbarGUI;
+			Action handler = OnToolbarGUI;
 			if (handler != null) handler();
 		}
 	}

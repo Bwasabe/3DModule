@@ -67,7 +67,7 @@ namespace UnityToolbarExtender
 				m_commandStyle = new GUIStyle("CommandLeft");
 			}
 
-			var screenWidth = EditorGUIUtility.currentViewWidth;
+			float screenWidth = EditorGUIUtility.currentViewWidth;
 
 			// Following calculations match code reflected from Toolbar.OldOnGUI()
 			float playButtonsPosition = Mathf.RoundToInt ((screenWidth - playPauseStopWidth) / 2);
@@ -125,7 +125,7 @@ namespace UnityToolbarExtender
 			{
 				GUILayout.BeginArea(leftRect);
 				GUILayout.BeginHorizontal();
-				foreach (var handler in LeftToolbarGUI)
+				foreach (Action handler in LeftToolbarGUI)
 				{
 					handler();
 				}
@@ -138,7 +138,7 @@ namespace UnityToolbarExtender
 			{
 				GUILayout.BeginArea(rightRect);
 				GUILayout.BeginHorizontal();
-				foreach (var handler in RightToolbarGUI)
+				foreach (Action handler in RightToolbarGUI)
 				{
 					handler();
 				}
@@ -150,7 +150,7 @@ namespace UnityToolbarExtender
 		
 		public static void GUILeft() {
 			GUILayout.BeginHorizontal();
-			foreach (var handler in LeftToolbarGUI)
+			foreach (Action handler in LeftToolbarGUI)
 			{
 				handler();
 			}
@@ -159,7 +159,7 @@ namespace UnityToolbarExtender
 		
 		public static void GUIRight() {
 			GUILayout.BeginHorizontal();
-			foreach (var handler in RightToolbarGUI)
+			foreach (Action handler in RightToolbarGUI)
 			{
 				handler();
 			}
