@@ -30,8 +30,11 @@ public class ToolbarScene
 
         string filePath =
             $"{Application.dataPath}{ScenesFilePath}";
+        
+        GUILayout.Space(5);
 
-        if (EditorGUILayout.DropdownButton(content, FocusType.Keyboard, EditorStyles.toolbarDropDown, GUILayout.Width(size.x + 5f)) == false) return;
+        if (EditorGUILayout.DropdownButton(content, FocusType.Keyboard, 
+                EditorStyles.toolbarDropDown, GUILayout.Width(size.x + 5f)) == false) return;
 
         GenericMenu menu = new GenericMenu();
         MakeSceneMenus(filePath, menu);
