@@ -10,7 +10,7 @@ using UnityToolbarExtender;
 [InitializeOnLoad]
 public class ToolbarScene
 {
-    private const string ScenesFilePath = "/00.Scenes";
+    private const string ScenesFilePath = "/05.Scenes"; 
 
     static ToolbarScene()
     {

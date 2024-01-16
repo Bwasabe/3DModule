@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[SingletonLifeTime(SingletonLifeTime.Application)]
-public class OnGUIManager : MonoSingleton<OnGUIManager>
+public class OnGUIManager : MonoBehaviour
 {
     private static readonly Dictionary<string, string> GUIDict = new();
 
@@ -13,8 +12,17 @@ public class OnGUIManager : MonoSingleton<OnGUIManager>
     {
         GUIDict[key] = value.ToString();
     }
+    
+    private void Awake()
+    {
+#if UNITY_EDITOR
 
-
+        DontDestroyOnLoad(gameObject);
+#else
+        Destroy(gameObject);
+#endif
+    }
+    
     private void OnGUI()
     {
 #if UNITY_EDITOR
