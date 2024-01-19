@@ -1,18 +1,22 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
-public class SceneLoader : MonoBehaviour
+[SingletonLifeTime(LifeTime.Application)]
+public class SceneLoader : MonoSingleton<SceneLoader>
 {
     [SerializeField] private new Camera camera;
     [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private float transitionTime = 0.5f;
 
-    private void Awake()
+    protected override void Awake()
     {
-        Instance = this;
+        base.Awake();
+        
         canvasGroup.alpha = 0;
         camera.gameObject.SetActive(Camera.main == null);
         DontDestroyOnLoad(gameObject);
@@ -67,7 +71,7 @@ public class SceneLoader : MonoBehaviour
         if (_targetScene != null)
         {
             AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(_targetScene);
-            asyncOperation.completed += _ => IsDone = true;
+            asyncOperation.completed += OnSceneLoaded;
 
             float timer = 0.0f;
             
@@ -84,24 +88,28 @@ public class SceneLoader : MonoBehaviour
             }
         }
 
-
         await HideLoadingScreenAsync();
+
         _targetScene = null;
+    }
+
+    private void OnSceneLoaded(AsyncOperation operation)
+    {
+        IsDone = true;
     }
 
     #region static
 
-    private static SceneLoader Instance { get; set; }
-    public static bool IsLoading => _targetScene != null;
+    public bool IsLoading => _targetScene != null;
 
-    public static bool IsDone { get; set; }
+    public bool IsDone { get; private set; }
 
-    private static string _targetScene;
+    private string _targetScene;
 
-    public static void LoadScene(string scene)
+    public void LoadScene(string scene)
     {
         _targetScene = scene;
-        Instance.Load();
+        Load();
     }
 
     [RuntimeInitializeOnLoadMethod]

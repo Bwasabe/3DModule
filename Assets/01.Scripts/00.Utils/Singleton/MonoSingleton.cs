@@ -29,8 +29,6 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
 
             _instance.transform.SetParent(null);
 
-            SingletonManager.Register(_instance);
-
             return _instance;
         }
     }

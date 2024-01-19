@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
-public enum SingletonLifeTime
+public enum LifeTime
 {
     Scene,
     Application
@@ -13,30 +13,30 @@ public enum SingletonLifeTime
 [AttributeUsage(AttributeTargets.Class)]
 public class SingletonLifeTimeAttribute : Attribute
 {
-    public SingletonLifeTime LifeTime { get; }
+    public LifeTime LifeTime { get; }
 
-    public SingletonLifeTimeAttribute(SingletonLifeTime lifeTime)
+    public SingletonLifeTimeAttribute(LifeTime lifeTime)
     {
         LifeTime = lifeTime;
     }
 
     public SingletonLifeTimeAttribute()
     {
-        LifeTime = SingletonLifeTime.Scene;
+        LifeTime = LifeTime.Scene;
     }
 }
 
 
 public static class SingletonManager
 {
-    private static readonly Dictionary<SingletonLifeTime, List<MonoBehaviour>> InstanceDictionary = new();
+    private static readonly Dictionary<LifeTime, Dictionary<Type, MonoBehaviour>> InstanceDictionary = new();
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void LoadSingleton()
     {
         SceneManager.sceneUnloaded += OnSceneUnloaded;
 
-        foreach (SingletonLifeTime lifeTime in Enum.GetValues(typeof(SingletonLifeTime)))
+        foreach (LifeTime lifeTime in Enum.GetValues(typeof(LifeTime)))
         {
             InstanceDictionary.Add(lifeTime, new());
         }
@@ -44,7 +44,7 @@ public static class SingletonManager
 
     private static void OnSceneUnloaded(Scene scene)
     {
-        InstanceDictionary[SingletonLifeTime.Scene].Clear();
+        InstanceDictionary[LifeTime.Scene].Clear();
     }
 
     public static void Register(MonoBehaviour instance)
@@ -56,10 +56,17 @@ public static class SingletonManager
             Debug.LogError($"{instance.GetType()} haven't SingletonLifeTimeAttribute");
             return;
         }
+        
+        if (InstanceDictionary[singletonLifeTimeAttribute.LifeTime].TryGetValue(instance.GetType(), out MonoBehaviour oldInstance))
+        {
+            Debug.LogError($"{instance.GetType()} Destroyed");
+            Object.Destroy(oldInstance.gameObject);
+            InstanceDictionary[singletonLifeTimeAttribute.LifeTime].Remove(instance.GetType());
+        }
 
-        InstanceDictionary[singletonLifeTimeAttribute.LifeTime].Add(instance);
+        InstanceDictionary[singletonLifeTimeAttribute.LifeTime].Add(instance.GetType(), instance);
 
-        if (singletonLifeTimeAttribute.LifeTime is not SingletonLifeTime.Scene)
+        if (singletonLifeTimeAttribute.LifeTime is not LifeTime.Scene)
             Object.DontDestroyOnLoad(instance.transform.root);
     }
 }
